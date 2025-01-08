@@ -7,14 +7,18 @@ import { rocketflag } from "./rocketflagClient";
 
 function App() {
   const [feature, setFeature] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     void (async () => {
+      setLoading(true);
       try {
         const flag = await rocketflag.getFlag("tuTA7Q4jB8roxiLzf49p");
         setFeature(flag.enabled);
       } catch (e) {
         console.error(e);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -34,9 +38,12 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <p>This is a RocketFlag React Demo with React using Vite!</p>
-      <h2>
-        Your feature flag is <span style={{ color: feature ? "green" : "red" }}>{feature ? "enabled" : "disabled"}</span>
-      </h2>
+      {loading && <p>Loading...</p>}
+      {!loading && (
+        <h2>
+          Your feature flag is <span style={{ color: feature ? "green" : "red" }}>{feature ? "enabled" : "disabled"}</span>
+        </h2>
+      )}
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
       <p>This app was built with Vite and the RocketFlag SDK with the MIT license.</p>
     </>
