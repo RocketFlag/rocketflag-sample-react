@@ -1,50 +1,78 @@
-# React + TypeScript + Vite
+# RocketFlag React Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple React application built with [Vite](https://vitejs.dev/) and [TypeScript](https://www.typescriptlang.org/) demonstrating the integration of feature flagging using the [@rocketflag/node-sdk](https://www.npmjs.com/package/@rocketflag/node-sdk).
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This repository provides a minimal example of how to use RocketFlag for managing feature toggles in a React environment. It showcases initialising the client and fetching flag status to conditionally render UI components.
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+- [Node.js](https://nodejs.org/) (latest LTS recommended)
+- [npm](https://www.npmjs.com/)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/rocketflag/react-rocketflag.git
+   cd react-rocketflag
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the App
+
+Start the development server:
+
+```bash
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+The application will be available at `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## How it Works
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### 1. Client Initialization
+
+The RocketFlag client is initialized in `src/rocketflagClient.ts`:
+
+```typescript
+import createRocketflagClient from "@rocketflag/node-sdk";
+
+export const rocketflag = createRocketflagClient();
 ```
+
+### 2. Fetching Flags
+
+In `src/App.tsx`, the application fetches the state of a feature flag using the `getFlag` method:
+
+```typescript
+useEffect(() => {
+  void (async () => {
+    try {
+      const flag = await rocketflag.getFlag("<YOUR_FLAG_ID>");
+      setFeature(flag.enabled);
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+}, []);
+```
+
+## Technologies Used
+
+- **React**: Frontend UI library.
+- **Vite**: Next-generation frontend tooling.
+- **TypeScript**: Static typing for JavaScript.
+- **RocketFlag SDK**: Feature flagging and configuration management.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).
